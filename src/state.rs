@@ -4,13 +4,13 @@ use anyhow::Result;
 
 use crate::config::Preset;
 
-#[derive(serde::Deserialize, serde::Serialize, Debug)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 pub struct ActiveOutput {
     pub preset: Preset,
-    pub vnc_process_pid: Option<i32>
+    pub vnc_process_pid: Option<u32>
 }
 
-#[derive(serde::Deserialize, serde::Serialize, Debug)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 pub struct State {
     #[serde(skip_serializing, skip_deserializing)]
     pub filepath: String,

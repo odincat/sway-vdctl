@@ -9,14 +9,35 @@ pub struct Resolution {
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
-pub struct Preset {
-    pub name: String,
-    pub resolution: Resolution,
-    pub scale_factor: u8,
-    pub port: u32
+pub struct Position {
+    pub x: i32,
+    pub y: i32
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub struct Preset {
+    pub name: String,
+    pub scale_factor: u8,
+    pub rotation: Option<i32>,
+    pub position: Option<Position>,
+    pub port: u32,
+    pub resolution: Resolution
+}
+
+impl Default for Preset {
+    fn default() -> Self {
+        Self {
+            name: "".to_owned(),
+            scale_factor: 1,
+            rotation: Some(0),
+            position: Some(Position { x: 0, y: 0 }),
+            port: 0,
+            resolution: Resolution { width: 1920, height: 1080 }
+        }
+    }
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Default)]
 pub struct Config {
     pub host: Option<String>,
     pub presets: HashMap<String, Preset>,

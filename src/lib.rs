@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::process::{Command, Child};
 
 use anyhow::{Result, bail};
 use clap::Parser;
@@ -12,6 +12,7 @@ pub mod state;
 pub enum Action {
     Create,
     Kill,
+    #[clap(help = "List out active sessions")]
     List,
     Restart,
     #[clap(alias = "no", help="Manually set the next output number, in case something breaks")]
@@ -46,5 +47,9 @@ pub fn kill_by_pid(pid: i32) -> Result<()> {
     } else {
         bail!("Error killing process")
     }
+}
+
+pub fn spawn_command(command_name: &str, args: Vec<&str>) -> Result<Child, std::io::Error> {
+    Command::new(command_name).args(args).spawn()
 }
 

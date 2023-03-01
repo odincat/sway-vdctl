@@ -3,7 +3,7 @@ use std::{collections::HashMap, process};
 use anyhow::Result;
 use clap::Parser;
 
-use vdctl::{config::{load_config, Preset, Config}, state::State, Args, Action, actions::{handle_action, ActionHandler}};
+use vdctl::{config::{load_config, Config}, state::State, Args, Action, actions::{handle_action, ActionHandler}};
 
 const STATE_FILEPATH: &str = "/tmp/vdctl-state";
 const PRESET_FILEPATH: &str = "/home/odincat/.config/vdctl/presets.json";
@@ -17,7 +17,7 @@ fn main() -> Result<()> {
         Err(err) => {
             match args.action {
                 Action::NextOutputNumber => {
-                    println!("WARN: Unable to load presets: {:?}", err);
+                    println!("WARN: Unable to load config: {:?}", err);
                     println!("Still continuing, as the operation you are performing doesn't require any presets");
                 },
                 _ => {
@@ -26,25 +26,20 @@ fn main() -> Result<()> {
                 }
             }
 
-            Config {
-                host: Some("0.0.0.0".to_owned()),
-                presets: vec![]
-            }
+            Config::default()
         }
     };
 
-    let mut presets: HashMap<String, Preset> = HashMap::new();
+    // let presets: HashMap<String, Preset> = HashMap::new();
     let mut preset_names: Vec<String> = vec![];
-    for preset in config.clone().presets {
-        presets.insert(preset.name.clone(), preset.clone());
-        preset_names.push(preset.name.clone());
+    for (name, _) in config.clone().presets {
+        preset_names.push(name);
     }
 
     let action_handler = ActionHandler {
         args: args.clone(),
         state,
         config,
-        presets,
         preset_names
     };
 
