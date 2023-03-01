@@ -1,0 +1,23 @@
+{
+    "host": "0.0.0.0",
+    "presets": [
+        {
+            "name": "laptop",
+            "scale_factor": 2,
+            "port": 99900,
+            "resolution": {
+                "width": 2560,
+                "height": 1440
+            }
+        },
+        {
+            "name": "ipad",
+            "scale_factor": 2,
+            "port": 99901,
+            "resolution": {
+                "width": 2360,
+                "height": 1640
+            }
+        }
+    ]
+}
