@@ -1,4 +1,4 @@
-use std::{collections::HashMap, process};
+use std::process;
 
 use anyhow::Result;
 use clap::Parser;
@@ -6,7 +6,7 @@ use clap::Parser;
 use vdctl::{config::{load_config, Config}, state::State, Args, Action, actions::{handle_action, ActionHandler}};
 
 const STATE_FILEPATH: &str = "/tmp/vdctl-state";
-const PRESET_FILEPATH: &str = "/home/odincat/.config/vdctl/presets.json";
+const PRESET_FILEPATH: &str = "/home/odincat/.config/vdctl/config.json";
 
 fn main() -> Result<()> {
     let args = Args::parse();
@@ -32,8 +32,8 @@ fn main() -> Result<()> {
 
     // let presets: HashMap<String, Preset> = HashMap::new();
     let mut preset_names: Vec<String> = vec![];
-    for (name, _) in config.clone().presets {
-        preset_names.push(name);
+    for preset in config.clone().presets {
+        preset_names.push(preset.name);
     }
 
     let action_handler = ActionHandler {

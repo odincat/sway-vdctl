@@ -9,7 +9,9 @@ use super::ActionHandler;
 pub fn create(action_handler: ActionHandler) -> Result<()> {
     let ActionHandler { config, mut state, args, preset_names } = action_handler;
 
-    let preset = match config.presets.get(args.value.as_str()) {
+    let preset_name = args.value.as_str().to_lowercase();
+
+    let preset = match config.get_preset(&preset_name) {
         Some(preset) => preset,
         None => {
             println!("Preset '{}' not found. Available presets are {}", args.value, preset_names.join(", "));

@@ -40,7 +40,19 @@ impl Default for Preset {
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Default)]
 pub struct Config {
     pub host: Option<String>,
-    pub presets: HashMap<String, Preset>,
+    pub presets: Vec<Preset>,
+}
+
+impl Config {
+    pub fn get_preset(&self, name: &str) -> Option<Preset> {
+        for preset in &self.presets {
+            if preset.name.to_lowercase() == name.to_lowercase() {
+                return Some(preset.clone())
+            }
+        }
+
+        None
+    }
 }
 
 pub fn load_config(filepath: &str) -> Result<Config> {

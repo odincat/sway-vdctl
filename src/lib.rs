@@ -15,10 +15,10 @@ pub enum Action {
     #[clap(help = "List out active sessions")]
     List,
     Restart,
-    #[clap(alias = "no", help="Manually set the next output number, in case something breaks")]
+    #[clap(name = "next-number", alias = "no", help="Manually set the next output number, in case something breaks")]
     NextOutputNumber,
-    #[clap(help="Sync the next output number with 'swaymsg -t get_output'")]
-    Sync,
+    #[clap(name = "sync-number", help="Sync the next output number with 'swaymsg -t get_output'")]
+    SyncNumber,
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -26,11 +26,11 @@ pub enum Action {
 pub struct Args {
     #[arg(value_enum)]
     pub action: Action,
-    #[arg(help = "Preset name to apply, alternatively a value")]
+    #[arg(default_value_t = String::new(), help = "Preset name to apply, alternatively a value")]
     pub value: String,
     // TODO: only required for certain commands
-    // #[arg(help = "Name of preset to apply")]
-    // pub preset: String,
+    #[arg(required_if("action", "create"), help = "Name of preset to apply")]
+    pub preset: Option<String>,
     #[arg(long, default_value_t = false, help = "do not launch a vnc server, just create the output")]
     pub novnc: bool
 }

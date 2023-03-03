@@ -4,6 +4,7 @@ use crate::{state::State, Action, Args, config::Config};
 
 mod create;
 mod list;
+mod sync;
 
 #[derive(Debug, Clone)]
 pub struct ActionHandler {
@@ -20,6 +21,7 @@ pub fn handle_action(action_handler: ActionHandler) -> Result<()> {
     match action_handler.args.action {
         Action::Create => create::create(action_handler)?,
         Action::List => list::list(action_handler)?,
+        Action::SyncNumber => sync::sync_next_output_number(action_handler)?,
         // Action::NextOutputNumber => {
         //     let preset_as_number: u8 = match args.value.parse() {
         //         Ok(num) => num,

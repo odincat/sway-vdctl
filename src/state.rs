@@ -38,7 +38,9 @@ impl State {
         } else {
             let state_file = fs::read_to_string(&filepath)?;
 
-            let json: State = serde_json::from_str(&state_file)?;
+            let mut json: State = serde_json::from_str(&state_file)?;
+
+            json.filepath = filepath.to_owned();
 
             Ok(json)
         }
