@@ -7,7 +7,8 @@ use crate::config::Preset;
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 pub struct ActiveOutput {
     pub preset: Preset,
-    pub vnc_process_pid: Option<u32>
+    pub vnc_process_pid: Option<u32>,
+    pub output_name: String
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
@@ -59,5 +60,15 @@ impl State {
         file.write_all(state_string.as_bytes())?;
 
         Ok(())
+    }
+
+    pub fn get_active_output(&self, name: &str) -> Option<(String, ActiveOutput)> {
+        for (preset_name, output) in &self.active_outputs {
+            if name.to_lowercase() == output.preset.name.to_lowercase() {
+                return Some((preset_name.clone(), output.clone()))
+            }
+        }
+
+        None
     }
 }

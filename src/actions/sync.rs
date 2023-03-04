@@ -1,14 +1,11 @@
 use std::process::Command;
 
 use anyhow::{Result, bail};
-use serde_json::Value;
-
-use crate::spawn_command;
 
 use super::ActionHandler;
 
 pub fn sync_next_output_number(action_handler: ActionHandler) -> Result<()> {
-    let ActionHandler { config, mut state, args, preset_names } = action_handler;
+    let ActionHandler { config: _, mut state, args: _, preset_names: _ } = action_handler;
 
     let output_command = Command::new("swaymsg").args(vec!["-t", "get_outputs", "-r"]).output()?;
     let output_string = String::from_utf8(output_command.stdout)?;
@@ -49,6 +46,8 @@ pub fn sync_next_output_number(action_handler: ActionHandler) -> Result<()> {
         state.save().unwrap();
 
         println!("Set next output number to {}", state.next_output_number)
+    } else {
+        println!("No headless outputs seem to be present at the moment")
     }
 
     Ok(())
@@ -56,7 +55,6 @@ pub fn sync_next_output_number(action_handler: ActionHandler) -> Result<()> {
 
 // Parsing of 'swaymsg -t get_outputs'
 type SwayGetOutputs = Vec<SwayOutput>;
-
 
 #[derive(serde::Deserialize, Default)]
 struct SwayOutput {

@@ -1,4 +1,4 @@
-use std::{path::Path, fs, collections::HashMap};
+use std::{path::Path, fs};
 
 use anyhow::{Result, bail};
 
@@ -20,7 +20,7 @@ pub struct Preset {
     pub scale_factor: u8,
     pub rotation: Option<i32>,
     pub position: Option<Position>,
-    pub port: u32,
+    pub port: u16,
     pub resolution: Resolution
 }
 

@@ -1,13 +1,17 @@
 use anyhow::Result;
 
-use crate::state::ActiveOutput;
-
 use super::ActionHandler;
 
 pub fn list(action_handler: ActionHandler) -> Result<()> {
-    let ActionHandler { config, mut state, args, preset_names } = action_handler;
+    let ActionHandler { config: _, state, args: _, preset_names: _ } = action_handler;
 
-    let active_outputs: Vec<ActiveOutput> = vec![];
+    if state.active_outputs.is_empty() == false {
+        for (_, output) in state.active_outputs {
+            println!("Preset '{}' active on port {} ({}x{})", output.preset.name, output.preset.port, output.preset.resolution.width, output.preset.resolution.height);
+        }
+    } else {
+        println!("No outputs seem to be active right now")
+    }
 
     Ok(())
 }

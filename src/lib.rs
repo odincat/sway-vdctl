@@ -29,13 +29,13 @@ pub struct Args {
     #[arg(default_value_t = String::new(), help = "Preset name to apply, alternatively a value")]
     pub value: String,
     // TODO: only required for certain commands
-    #[arg(required_if("action", "create"), help = "Name of preset to apply")]
-    pub preset: Option<String>,
+    // #[arg(required_if("action", "create"), help = "Name of preset to apply")]
+    // pub preset: Option<String>,
     #[arg(long, default_value_t = false, help = "do not launch a vnc server, just create the output")]
     pub novnc: bool
 }
 
-pub fn kill_by_pid(pid: i32) -> Result<()> {
+pub fn kill_by_pid(pid: u32) -> Result<()> {
     let output = Command::new("kill")
         .arg("-TERM")
         .arg(pid.to_string())
@@ -45,6 +45,7 @@ pub fn kill_by_pid(pid: i32) -> Result<()> {
         //TODO: check if process under pid is still running after a short delay??
         Ok(())
     } else {
+        //TODO: Get actual error message from stderr
         bail!("Error killing process")
     }
 }

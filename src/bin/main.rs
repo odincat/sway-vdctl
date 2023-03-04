@@ -16,7 +16,7 @@ fn main() -> Result<()> {
         Ok(sp) => sp,
         Err(err) => {
             match args.action {
-                Action::NextOutputNumber => {
+                Action::NextOutputNumber | Action::SyncNumber => {
                     println!("WARN: Unable to load config: {:?}", err);
                     println!("Still continuing, as the operation you are performing doesn't require any presets");
                 },
@@ -29,6 +29,16 @@ fn main() -> Result<()> {
             Config::default()
         }
     };
+
+    if args.value.is_empty() {
+        match args.action {
+            Action::SyncNumber | Action::List => {},
+            _ => {
+                println!("A value must be supplied with this action");
+                process::exit(1);
+            }
+        }
+    }
 
     // let presets: HashMap<String, Preset> = HashMap::new();
     let mut preset_names: Vec<String> = vec![];
