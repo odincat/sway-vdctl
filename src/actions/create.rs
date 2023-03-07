@@ -2,7 +2,7 @@ use std::{process::{self, Command}, time::Duration};
 
 use anyhow::{Result, bail};
 
-use crate::{state::ActiveOutput, spawn_command};
+use crate::state::ActiveOutput;
 
 use super::ActionHandler;
 
@@ -32,19 +32,19 @@ pub fn create(action_handler: ActionHandler) -> Result<()> {
     }
 
     let output_name = format!("HEADLESS-{}", &state.next_output_number.clone());
-    spawn_command("swaymsg", vec!["create_output"]).expect("Error creating output");
+    Command::new("swaymsg").arg("create_output").spawn().expect("Error creating output");
     println!("Created output, presumably '{}'", &output_name);
 
     state.next_output_number += 1;
 
     let resolution = format!("{}x{}", &preset.resolution.width, &preset.resolution.height);
-    spawn_command("swaymsg", vec!["output", &output_name, "resolution", &resolution])?;
+    Command::new("swaymsg").args(vec!["output", &output_name, "resolution", &resolution]).spawn()?;
     println!("Set resolution of '{}' to {}", &output_name, &resolution);
-    spawn_command("swaymsg", vec!["output", &output_name, "scale", &preset.scale_factor.to_string()])?;
+    Command::new("swaymsg").args(vec!["output", &output_name, "scale", &preset.scale_factor.to_string()]).spawn()?;
     println!("Set scale factor of '{}' to {}", &output_name, &preset.scale_factor);
 
     if let Some(pos) = &preset.position {
-        spawn_command("swaymsg", vec!["output", &output_name, "pos", &pos.x.to_string(), &pos.y.to_string()])?;
+        Command::new("swaymsg").args(vec!["output", &output_name, "pos", &pos.x.to_string(), &pos.y.to_string()]).spawn()?;
         println!("Set position of '{}' to x: {}, y:{}", &output_name, &pos.x, &pos.y);
     }
 
@@ -62,7 +62,7 @@ pub fn create(action_handler: ActionHandler) -> Result<()> {
             "clockwise"
         };
 
-        spawn_command("swaymsg", vec!["output", &output_name, "transform", &rot.to_string(), direction])?;
+        Command::new("swaymsg").args(vec!["output", &output_name, "transform", &rot.to_string(), direction]).spawn()?;
         println!("Set rotation of '{}' to {} ({})", &output_name, rot, direction);
     }
 
@@ -79,16 +79,14 @@ pub fn create(action_handler: ActionHandler) -> Result<()> {
     };
 
     if args.novnc == false {
-        println!("{}", &output_name);
+        std::thread::sleep(Duration::from_millis(500));
 
-        let output_arg = format!("-o {}", output_name);
-
-        println!("{}", output_arg);
-
-        std::thread::sleep(Duration::from_millis(5000));
+        let vnc_output = format!("-o={}", &output_name);
+        let vnc_socket = format!("-S=/tmp/{}.sock", &output_name.to_lowercase());
 
         let vnc_cmd = Command::new("wayvnc")
-            .arg(&output_arg)
+            .arg(vnc_output)
+            .arg(vnc_socket)
             .arg(&host)
             .arg(&preset.port.to_string())
             .spawn()?;
@@ -101,6 +99,8 @@ pub fn create(action_handler: ActionHandler) -> Result<()> {
     state.active_outputs.insert(preset.name.to_owned(), active_output);
 
     state.save()?;
+
+    println!("Preset '{}' ('{}': {}x{}) is now active on port {}", preset.name, &output_name, preset.resolution.width, preset.resolution.height, preset.port);
 
     Ok(())
 }

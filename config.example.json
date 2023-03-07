@@ -4,7 +4,7 @@
         {
             "name": "laptop",
             "scale_factor": 2,
-            "port": 99900,
+            "port": 9900,
             "resolution": {
                 "width": 2560,
                 "height": 1440
@@ -13,10 +13,24 @@
         {
             "name": "ipad",
             "scale_factor": 2,
-            "port": 99901,
+            "port": 9901,
             "resolution": {
                 "width": 2360,
                 "height": 1640
+            }
+        },
+        {
+            "name": "another-laptop",
+            "scale_factor": 1.5,
+            "port": 7682,
+            "rotation": -90,
+            "position": {
+                x: 0,
+                y: 0,
+            },
+            "resolution": {
+                "width": 1920,
+                "height": 1080 
             }
         }
     ]

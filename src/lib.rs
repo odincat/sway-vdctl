@@ -10,14 +10,15 @@ pub mod state;
 // CLI argument parsing
 #[derive(Debug, Clone, clap::ValueEnum)]
 pub enum Action {
+    #[clap(help = "Create new output based on a preset")]
     Create,
+    #[clap(help = "Terminate / unplug an active preset")]
     Kill,
-    #[clap(help = "List out active sessions")]
+    #[clap(help = "List out active presets")]
     List,
-    Restart,
     #[clap(name = "next-number", alias = "no", help="Manually set the next output number, in case something breaks")]
     NextOutputNumber,
-    #[clap(name = "sync-number", help="Sync the next output number with 'swaymsg -t get_output'")]
+    #[clap(name = "sync-number", help="Sync the next output number using 'swaymsg -t get_outputs'")]
     SyncNumber,
 }
 
@@ -45,12 +46,21 @@ pub fn kill_by_pid(pid: u32) -> Result<()> {
         //TODO: check if process under pid is still running after a short delay??
         Ok(())
     } else {
-        //TODO: Get actual error message from stderr
-        bail!("Error killing process")
+        let err = String::from_utf8(output.stderr)?;
+        bail!("Error killing process: {}", err);
     }
 }
 
 pub fn spawn_command(command_name: &str, args: Vec<&str>) -> Result<Child, std::io::Error> {
     Command::new(command_name).args(args).spawn()
+}
+
+pub fn is_command_installed(command: &str) -> bool {
+    Command::new("sh")
+        .arg("-c")
+        .arg(format!("command -v {}", command))
+        .output()
+        .map(|output| output.status.success())
+        .unwrap_or(false)
 }
 

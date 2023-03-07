@@ -7,7 +7,7 @@ pub fn list(action_handler: ActionHandler) -> Result<()> {
 
     if state.active_outputs.is_empty() == false {
         for (_, output) in state.active_outputs {
-            println!("Preset '{}' active on port {} ({}x{})", output.preset.name, output.preset.port, output.preset.resolution.width, output.preset.resolution.height);
+            println!("Preset '{}' ('{}': {}x{}) active on port {}", output.preset.name, output.output_name, output.preset.resolution.width, output.preset.resolution.height, output.preset.port);
         }
     } else {
         println!("No outputs seem to be active right now")
