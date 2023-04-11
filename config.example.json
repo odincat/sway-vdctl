@@ -25,8 +25,8 @@
             "port": 7682,
             "rotation": -90,
             "position": {
-                x: 0,
-                y: 0
+                "x": 0,
+                "y": 0
             },
             "resolution": {
                 "width": 1920,
