@@ -17,7 +17,7 @@ pub struct Position {
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 pub struct Preset {
     pub name: String,
-    pub scale_factor: u8,
+    pub scale_factor: f32,
     pub rotation: Option<i32>,
     pub position: Option<Position>,
     pub port: u16,
@@ -28,7 +28,7 @@ impl Default for Preset {
     fn default() -> Self {
         Self {
             name: "".to_owned(),
-            scale_factor: 1,
+            scale_factor: 1.0,
             rotation: Some(0),
             position: Some(Position { x: 0, y: 0 }),
             port: 0,
@@ -66,4 +66,3 @@ pub fn load_config(filepath: &str) -> Result<Config> {
         Ok(json)
     }
 }
-
